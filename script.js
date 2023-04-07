@@ -72,7 +72,7 @@ var bValues = new Array(256).fill(0);
 const svg = d3.select("body")
   .append("svg")
   .attr("width", 800)
-  .attr("height", 600);
+  .attr("height", 300);
 
 const xScale = d3.scaleLinear()
   .domain([0, 255])
@@ -80,7 +80,7 @@ const xScale = d3.scaleLinear()
 
 const yScale = d3.scaleLinear()
   .domain([0, 1])
-  .range([550, 50]);
+  .range([250, 50]);
 
 const line = d3.line()
   .x((d, i) => xScale(i))
