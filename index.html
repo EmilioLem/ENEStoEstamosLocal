@@ -36,8 +36,6 @@
     <canvas id="Vcanvas"></canvas>
     <canvas id="Icanvas"></canvas>
     <br>
-      <!-- <svg id="myPlot" style="width:500px;height:500px"></svg> -->
-    <br>
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
 
@@ -58,7 +56,7 @@
     //JSON.parse("text") // JSON.stringify(object);
     
     var dataO, dataI, iData = [];
-    const pW = 192, pH = 144;
+    const pW = /*192*/144, pH = /*144*/192;
 
     window.onload = ()=>{
       navigator.mediaDevices.getUserMedia({
