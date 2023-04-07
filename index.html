@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>camera</title>
+    <style>
+        * {
+      background-color: black;
+      color: white;
+      /* -webkit-box-shadow: -4px 7px 34px 13px rgba(255,255,255,0.62);  */
+
+    }
+    video{
+      display: none;
+    } 
+
+    canvas {
+      box-shadow: -4px 7px 34px 13px white;
+      margin: 30px;
+    }
+    </style>
+    <!-- <link rel="shortcut icon" href="?"> -->
+</head>
+<body>
+    <h1>Hi there, user!</h1>
+
+    <br>
+    <h3>This is the page where you will be able to... get information about the space arround you.</h3>
+    <br>
+    <!-- <h2 onclick="takePhotoSaveData()">SaveDataToLearn</h2>
+    <h2 onclick="exportData()">ExportDataToLearn</h2>
+    <br> -->
+    <video id="videoO"></video>
+    <canvas id="Vcanvas"></canvas>
+    <canvas id="Icanvas"></canvas>
+    <br>
+      <!-- <svg id="myPlot" style="width:500px;height:500px"></svg> -->
+    <br>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
+    <script>
+        //https://jsfiddle.net/rxbe1zj3/
+    //navigator.getUserMedia is long deprecated. Use navigator.mediaDevices.getUserMedia now.
+    //Mess with this document https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#front_and_back_camera
+    
+    const Vcanvas = document.getElementById("Vcanvas"); // Video canvas, the original video.
+    const Icanvas = document.getElementById("Icanvas"); //Invert Canvaa
+    var Vctx = Vcanvas.getContext("2d");
+    var Ictx = Icanvas.getContext("2d");
+    const videoO = document.getElementById("videoO");    
+
+    
+    
+    //localStorage.setItem('pW', '1920'); //localStorage.getItem('pH')
+    //JSON.parse("text") // JSON.stringify(object);
+    
+    var dataO, dataI, iData = [];
+    const pW = 192, pH = 144;
+
+    window.onload = ()=>{
+      navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: {
+        width: pW,//{min: 192, ideal: 1080, max: 1920},
+        height: pH,//{min: 144, ideal: 720, max: 1080},
+        frameRate: { min: 1, ideal: 30, max: 120 },
+        facingMode: 'environment' //or "user"
+      }
+    }).then(stream => {
+      videoO.srcObject = stream;
+      Vcanvas.width = Icanvas.width = pW;
+      Vcanvas.height = Icanvas.height = pH;
+      
+      videoO.volume = 0;
+      videoO.play();
+    
+      setTimeout(frameRendering, 1);
+      setTimeout(invertColor, 33.33);
+      setTimeout(updateHistogram, 40);
+      
+    }).catch(console.error);
+    };
+    </script>
+    <script src="./script.js"></script>
+</body>
+</html>
+
+<!-- Convertir la imagen a un histograma RGB (un array con la cantidad de veces que aparece un color en la imagen... probablemente tratar de adaptar los picos y valles extremos a algo más normal, para que tengan la misma importancia los picos y los pequeños cambios), y pasarselo a la IA para -->
+
+<!-- ¿Será eficiente pasar info de ambos, la cantidad de píxeles por color, y la diferencia entre esas cantidades? 
+  Tipo, que aprenda si el cambio entre uno u otro color es importante o nah
+-->
+
+
+<!-- Curiosidad: https://en.wikipedia.org/wiki/Rg_chromaticity -->
