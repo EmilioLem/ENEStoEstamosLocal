@@ -75,12 +75,12 @@ const svg = d3.select("body")
   .attr("height", 600);
 
 const xScale = d3.scaleLinear()
-  .domain([0, 255])
-  .range([50, 750]);
+  .domain([0, 255])  //From the data
+  .range([0, 800]); //From the table
 
 const yScale = d3.scaleLinear()
-  .domain([0, 1])
-  .range([550, 50]);
+  .domain([0, 1]) //From the data
+  .range([600, 0]);  //From the table
 
 const line = d3.line()
   .x((d, i) => xScale(i))
