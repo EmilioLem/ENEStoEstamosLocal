@@ -1,0 +1,11 @@
+Create a brand new code (just kidding, a copy) of the front end, and make a routine:
+
+1. Let the user introduce the names of the places to map
+2. Let the user take photos of each place
+3. Arrange them on the cnn format
+4. Train the network, with several logs in the page (inner html)
+5. Export the network as a function on a js format
+6. Upload to gitHub
+7. Make a page for the actual user, only giving him the js file of the standalone function
+
+Test A LOT :(
