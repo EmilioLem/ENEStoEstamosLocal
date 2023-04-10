@@ -92,3 +92,5 @@ http.createServer((req, res) => {
   lt -p 8080
   */
 });
+
+//ssh -R 80:localhost:8080 serveo.net
