@@ -94,3 +94,6 @@ http.createServer((req, res) => {
 });
 
 //ssh -R 80:localhost:8080 serveo.net
+//location.reload()
+//To make an alternative always-on requested, in order to keep alive the serveo service
+//But first, compare speeds of serving an image using both tunneling services
