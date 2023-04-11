@@ -9,3 +9,6 @@ Create a brand new code (just kidding, a copy) of the front end, and make a rout
 7. Make a page for the actual user, only giving him the js file of the standalone function
 
 Test A LOT :(
+
+
+    ji ji ji
