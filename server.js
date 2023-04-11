@@ -6,6 +6,7 @@ var fs = require('fs');
 var ip = require('ip'); //Has to be installed // npm install name
 //var nodemailer = require('nodemailer'); //Has to be installed
 var localtunnel = require('localtunnel');
+const brain = require('brain.js');
 
 
 const portS = 8080;
@@ -45,18 +46,25 @@ http.createServer((req, res) => {
     //console.log("someone tries to upload photo");
     let placeName = req.url.slice(9);
     console.log(placeName);
-
+    
     let dataString = '';
     req.on('data', chunk => { dataString += chunk; });
     req.on('end', () => {
       let photoArray = JSON.parse(dataString);
       //console.log(photoArray[photoArray.length-1]); //Just prints the last element
       console.log(photoArray.length); //32*32*3 = 3072
-    
+      
       res.writeHead(200, {'Content-Type': 'text/plain'});
       res.end('okUser');
       addPhoto(photoArray, placeName);
     });
+  }
+  
+  else if(req.url == '/train'){
+    console.log("we're training");
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('ok we received the data');
+    trainNetwork();
   }
   
   else if(req.method == 'GET' && req.url == '/theTest.html'){
@@ -118,8 +126,6 @@ function addPhoto(photoArray, placeName){
   const fs = require('fs');
   fs.readFile('data.json', 'utf8', (err, data) => {
     if (err) throw err;
-
-    console.log("We opened the file");
   
     var jsonData = JSON.parse(data);
 
@@ -139,6 +145,46 @@ function addPhoto(photoArray, placeName){
   });
     
 
+}
+
+
+let placeOptions = [
+  "chair01",
+  "floor01"
+];
+
+function trainNetwork(){
+  fs.readFile('data.json', 'utf8', (err, data) => {
+    if (err) throw err;
+
+    console.log("We opened the file");
+  
+    var jsonData = JSON.parse(data);
+
+    let trainingData = [];
+    for(let photo of jsonData){
+      let resultArray = new Array(placeOptions.length).fill(0);
+      let index = placeOptions.indexOf(photo.plN);
+      resultArray[index] = 1;
+      trainingData.push({'input': photo.phA, 'output': resultArray});
+    }
+
+    //console.log(trainingData[1].input.length);
+
+    let net = new brain.NeuralNetwork({hiddenLayers: [trainingData[0].input.length, 50, 2]});
+
+    net.train(trainingData, {
+      //Even these {} are not necessary
+      log: (error) => console.log(error),
+      logPeriod: 1 //If not specified, will log every 10 iterations
+    });
+
+    console.log(net.run(trainingData[2].input));
+    console.log(net.run(trainingData[1].input));
+    
+  
+    
+  });
 }
 
 //lt -p 8080
