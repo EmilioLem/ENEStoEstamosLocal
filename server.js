@@ -8,14 +8,14 @@ var ip = require('ip'); //Has to be installed // npm install name
 var localtunnel = require('localtunnel');
 const brain = require('brain.js');
 
+const net = new brain.NeuralNetworkGPU({hiddenLayers: [/*trainingData[0].input.length*/3072, 50, 2]});
 
 const portS = 8080;
-//npm install localtunnel
-//cmd: lt --port 8080 --subdomain thepaps
 
 http.createServer((req, res) => {
 
   if(req.method == 'POST' && req.url == '/data'){
+    //Deprecated
     let data = '';
     req.on('data', chunk => { data += chunk; });
     req.on('end', () => {
@@ -26,19 +26,23 @@ http.createServer((req, res) => {
   } 
 
   else if(req.method == 'POST' && req.url == '/photo'){
-    let data = ''; //Just for the test. Will be replaced by /newPhoto
+    let data = ''; //Just for the test... actually, receives unknow photos and classifies it
     req.on('data', chunk => { data += chunk; });
     req.on('end', () => {
-      console.log(JSON.parse(data));
-      res.end('okUser');
+      
+      res.writeHead(200, {'Content-Type': 'application/JSON'});
+
+      console.log(JSON.parse(data).length);
+      
+      res.end(JSON.stringify(net.run(JSON.parse(data))));
     });
 
   } 
 
-  //Send data through the url
+  //Send data through the url, deprecated
   else if(req.url.slice(0, 5) == '/over'){
     console.log(JSON.parse(req.url.slice(5)));
-    res.writeHead(200, {'Content-Type': 'text/plain'});
+    //res.writeHead(200, {'Content-Type': 'text/plain'}); //Didn't displayed the data
     res.end('ok we received the data');
   }
 
@@ -51,8 +55,8 @@ http.createServer((req, res) => {
     req.on('data', chunk => { dataString += chunk; });
     req.on('end', () => {
       let photoArray = JSON.parse(dataString);
-      //console.log(photoArray[photoArray.length-1]); //Just prints the last element
-      console.log(photoArray.length); //32*32*3 = 3072
+      console.log(photoArray[photoArray.length-1]); //Just prints the last element
+      //console.log(photoArray.length); //32*32*3 = 3072
       
       res.writeHead(200, {'Content-Type': 'text/plain'});
       res.end('okUser');
@@ -68,6 +72,7 @@ http.createServer((req, res) => {
   }
   
   else if(req.method == 'GET' && req.url == '/theTest.html'){
+    //Not really in use
     fs.readFile('theTest.html', function(err, data) {
       res.writeHead(200, {'Content-Type': 'text/html'});
       res.write(data);
@@ -85,13 +90,15 @@ http.createServer((req, res) => {
       res.end();
     });
   }
-  else if(req.method == 'GET' && req.url == '/awake'){
-    fs.readFile('keepServeoAwake.html', function(err, data) {
+
+  else if(req.method == 'GET' && req.url == '/index2.html'){
+    fs.readFile('index2.html', function(err, data) {
       res.writeHead(200, {'Content-Type': 'text/html'});
       res.write(data);
       res.end();
     });
   }
+
   else if(req.method == 'GET' && req.url == '/script.js'){
     fs.readFile('script.js', function(err, data) {
       res.writeHead(200, {'Content-Type': 'application/js'});
@@ -100,6 +107,38 @@ http.createServer((req, res) => {
     });
   }
 
+  else if(req.method == 'GET' && req.url == '/script2.js'){
+    fs.readFile('script2.js', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'application/js'});
+      res.write(data);
+      res.end();
+    });
+  }
+
+  /*
+  else if(req.method == 'GET' && (req.url == '/index.html' || req.url == '/index2.html')){
+    fs.readFile(req.url/*'index.html'*, function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write(data);
+      res.end();
+    });
+  }
+  else if(req.method == 'GET' && (req.url == '/script.js' || req.url == '/script2.js')){
+    fs.readFile(req.url/*'script.js'*, function(err, data) {
+      res.writeHead(200, {'Content-Type': 'application/js'});
+      res.write(data);
+      res.end();
+    });
+  }
+  */
+  
+  else if(req.method == 'GET' && req.url == '/awake'){
+    fs.readFile('keepServeoAwake.html', function(err, data) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write(data);
+      res.end();
+    });
+  }
 
 
 
@@ -107,7 +146,7 @@ http.createServer((req, res) => {
   
   else if(req.method == 'GET' && req.url == '/'){
     res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write('<h2>Goto <a href="/index.html">here</a></h2>');
+    res.write('<h2>Goto <a href="/index2.html">here</a></h2>');
     res.end('<h3>Hello World</h3>');
   }
   
@@ -120,8 +159,6 @@ http.createServer((req, res) => {
 });
 
 function addPhoto(photoArray, placeName){
-
-  console.log("we're trying to add a photo");
  
   const fs = require('fs');
   fs.readFile('data.json', 'utf8', (err, data) => {
@@ -130,7 +167,7 @@ function addPhoto(photoArray, placeName){
     var jsonData = JSON.parse(data);
 
     //console.log(jsonData);
-    console.log(jsonData.length)
+    //console.log(jsonData.length)
     jsonData.push(
       {
         'plN': placeName,
@@ -169,9 +206,10 @@ function trainNetwork(){
       trainingData.push({'input': photo.phA, 'output': resultArray});
     }
 
-    //console.log(trainingData[1].input.length);
+    console.log(trainingData.length);
+    console.log(trainingData[1].input);
+    console.log(trainingData[1].input.length);
 
-    let net = new brain.NeuralNetwork({hiddenLayers: [trainingData[0].input.length, 50, 2]});
 
     net.train(trainingData, {
       //Even these {} are not necessary
@@ -179,6 +217,7 @@ function trainNetwork(){
       logPeriod: 1 //If not specified, will log every 10 iterations
     });
 
+    console.log(trainingData[2].input.length);
     console.log(net.run(trainingData[2].input));
     console.log(net.run(trainingData[1].input));
     
