@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simpleSliders</title>
+</head>
+<body>
+    <div id="webcam-container"></div>
+    <div id="label-container"></div>
+
+    <button onclick="whereIam()">Press here to know more about your location</button>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    
+    <script type="text/javascript">
+        // More API functions here:
+        // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+        
+        // the link to your model provided by Teachable Machine export panel
+        const URL = "https://teachablemachine.withgoogle.com/models/k5ZKKllfp/";//"./my_model/";
+        
+        let model, webcam, labelContainer, maxPredictions, theProb = []/*ProbablyDeprecated*/, theMostProbable = { index: 0, value: 0, className: "allo"};
+
+        let wantNew = true;
+
+
+        function whereIam(){
+            
+            document.getElementById(`a${theMostProbable.index + 1}`).play();
+            
+            //alert(theMostProbable.className);
+
+        }
+
+        async function stopCamera() {
+          if (webcam) {
+            await webcam.stop();
+            webcam = null;
+          }
+          wantNew = false;
+        }
+
+        async function startCamera() {
+          const flip = true; // whether to flip the webcam
+          webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+          await webcam.setup(); // request access to the webcam
+          await webcam.play();
+
+          document.getElementById("webcam-container").innerHTML = '';
+          document.getElementById("webcam-container").appendChild(webcam.canvas);
+          wantNew = true;
+          window.requestAnimationFrame(loop);
+        }
+        
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+            
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+            
+            // Convenience function to setup a webcam
+            const flip = true; // whether to flip the webcam
+            webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+            await webcam.setup(); // request access to the webcam
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            // append elements to the DOM
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+
+
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) { // and class labels
+                
+                var divElement = document.createElement("div");
+                var inputElement = document.createElement("input");
+                var textElement = document.createElement("p");
+
+                inputElement.type = 'range';
+                //inputElement.value = '0.5';
+                inputElement.className = 'slider';
+                inputElement.min = '0';
+                inputElement.max = '1';
+                inputElement.step = '0.001';
+
+                //document.getElementById("label-container").appendChild(inputElement);
+                divElement.appendChild(textElement);
+                divElement.appendChild(inputElement);
+                labelContainer.appendChild(divElement);
+
+            }
+
+        }
+    
+        async function loop() {
+            if(wantNew){
+                webcam.update(); // update the webcam frame
+                theMostProbable = await predict(theMostProbable);
+                window.requestAnimationFrame(loop);
+
+            }
+        }
+
+        async function predict() {
+            let theMostProbableN = { index: 0, value: 0, className: "allo"};
+            // predict can take in an image, video or canvas html element
+            const prediction = await model.predict(webcam.canvas);
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction =
+                    prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                labelContainer.childNodes[i].childNodes[0].innerText = classPrediction;
+                /*document.querySelectorAll(".slider")[i]*/
+                labelContainer.childNodes[i].childNodes[1].value = theProb[i] = prediction[i].probability.toFixed(2);
+
+                if(theMostProbableN.value < prediction[i].probability){
+                    theMostProbableN.index = i;
+                    theMostProbableN.value = prediction[i].probability;
+                    theMostProbableN.className = prediction[i].className;
+                }
+            }
+            return theMostProbableN;
+        }
+
+        init();
+    </script>
+    <audio id="a1" src="./audios/a1.mp3"></audio>
+    <audio id="a2" src="./audios/a2.mp3"></audio>
+</body>
+</html>
+
+<!-- 
+
+    I can stop the camera with webcam.stop(), but I dont mannage to reactivate it.
+
+
+
+ -->
