@@ -5,12 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>simpleSliders</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <div id="fullscreen-image">
+       <img src="./enesLogo.jpg" alt="Full Screen Image">
+    </div>
+
+
     <div id="webcam-container"></div>
     <div id="label-container"></div>
 
-    <button onclick="whereIam()">Press here to know more about your location</button>
+    <div id="buttonsContainer"></div>
+
 
 
 
@@ -18,11 +25,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     
     <script type="text/javascript">
-        // More API functions here:
-        // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+
+    window.addEventListener('load', function() {
+      var fullscreenImage = document.getElementById('fullscreen-image');
+      fullscreenImage.style.display = 'block';
+
+      setTimeout(function() {
+        fullscreenImage.style.animation = 'diffuse 2s';
+        setTimeout(function() {
+          fullscreenImage.style.display = 'none';
+        }, 2000); // Change this value to adjust the duration of the image before diffusing
+      }, 100); // Change this value to adjust the delay before the image appears
+    });
+
+
+
+
+
         
-        // the link to your model provided by Teachable Machine export panel
-        const URL = "https://teachablemachine.withgoogle.com/models/v8b0xgZLD/";//"./my_model/";
+        const URL = "https://teachablemachine.withgoogle.com/models/v8b0xgZLD/";
         
         let model, webcam, labelContainer, maxPredictions, theProb = []/*ProbablyDeprecated*/, theMostProbable = { index: 0, value: 0, className: "allo"};
 
@@ -31,7 +52,13 @@
 
         function whereIam(){
             
-            document.getElementById(`a${theMostProbable.index + 1}`).play();
+            if(theMostProbable.value > 0.7){
+                alert(`<<Esto es>> ${bd[theMostProbable.index].name}, <<se encuentra en>> ${bd[theMostProbable.index].location}, <<se usa principalmente para>> ${bd[theMostProbable.index].mainUse} y ${bd[theMostProbable.index].specialData}, <<además de que>> ${bd[theMostProbable.index].otherInfo}.`);
+                    
+                    //document.getElementById(`a${theMostProbable.index + 1}`).play();
+            }else{
+                alert("La imagen no es certera, apunta a un sitio de interés");
+            }
             
             //alert(theMostProbable.className);
 
@@ -97,12 +124,19 @@
 
             }
 
+            var whereIm = document.createElement("button");
+            whereIm.onclick = whereIam;
+            whereIm.textContent = "Press here to know more abput your location";
+            whereIm.id = "whereImButton";
+
+            document.getElementById("buttonsContainer").appendChild(whereIm);
+
         }
     
         async function loop() {
             if(wantNew){
                 webcam.update(); // update the webcam frame
-                theMostProbable = await predict(theMostProbable);
+                theMostProbable = await predict();
                 window.requestAnimationFrame(loop);
 
             }
@@ -116,7 +150,7 @@
                 const classPrediction =
                     prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                 labelContainer.childNodes[i].childNodes[0].innerText = classPrediction;
-                /*document.querySelectorAll(".slider")[i]*/
+                
                 labelContainer.childNodes[i].childNodes[1].value = theProb[i] = prediction[i].probability.toFixed(2);
 
                 if(theMostProbableN.value < prediction[i].probability){
@@ -129,16 +163,90 @@
         }
 
         init();
+
+        const bd = [
+            { //1
+                name: "la ENES",
+                location: "A mano derecha de la entrada del campus",
+                mainUse: "impartición de clases",
+                specialData: "Lleva en pié menos de 3 años, es muy nueva",
+                otherInfo: "En la planta baja puede encontrar el área médica, la psicóloga y la cafetería. En el primer piso se encuentran los laboratorios de química y biología, así como la explanada y el área de juegos. En el segundo piso se ubica \"servicios escolares\". En el tercer piso se encuentran los laboratorios de cómputo. En el cuarto piso se encuentran las oficinas de los directivos y docentes."
+            }, //2
+            {
+                name: "la Planta baja",
+                location: "Piso que es atravesado por el circuito principal",
+                mainUse: "Accesso principal a las escaleras, futura recepción vehicular.",
+                specialData: "Los estudiantes pueden dejar sus bicis encadenadas ahí",
+                otherInfo: "A la derecha del pasillo están las escaleras para bajar a los laboratorios de Ortesis y Prótesis."
+            },
+            { //3
+                name: "Lab. de Ortesis",
+                location: "A la derecha de la ENES tomando las escaleras para bajar en planta baja.",
+                mainUse: "Educación e investigaciones relacionadas a la carrera de Ortesis y Prótesis.",
+                specialData: "Es el lugar más escondido de la ENES",
+                otherInfo: "Los estudiantes laboran en sus laboratorios desde el 1er semestre"
+            },
+            { //4
+                name: "Cafetería",
+                location: "Debajo del circuito principal, en forma de cueva",
+                mainUse: "1/2 de los alumnos consume sus alimentos en ese lugar",
+                specialData: "Todos los locales tienen pago por transferencia",
+                otherInfo: "Los horarios de los desayunos y comidas son de 10 am a 2:30 pm"
+            },
+            { //5
+                name: "Muro morado",
+                location: "En el anfiteatro de la ENES",
+                mainUse: "Exposición de temáticas relacionadas con la igualdad y discriminación.",
+                specialData: "Aquí se moldea el futuro de los estudiantes...",
+                otherInfo: "Cada 8 de Marzo se realizan actividades culturales en el recinto."
+            },
+            { //6
+                name: "Explanada de juegos",
+                location: "En el primer piso de la ENES en el ala derecha",
+                mainUse: "Recreación",
+                specialData: "Se encuentran tableros de ajedrez, ping pong y futbolito",
+                otherInfo: "Servicios escolares puede prestar material"
+            },
+            { //7
+                name: "Labs. de química",
+                location: "En el primer piso de la ENES en el ala derecha",
+                mainUse: "Docencia",
+                specialData: "Se imparten clases de prácticas de química en sus diferentes ramificaciones, y a alumnos de licenciatura, maestría e ingeniería.",
+                otherInfo: "En horario de clase está disponible un laboratorista para apoyar con el orden y provisión del material"
+            },
+            { //8
+                name: "Labs. de cómputo",
+                location: "En el 3er piso a mano derecha de las escaleras",
+                mainUse: "Clases específicas de cómputo paralelo, introducción a la programación, etc afines.",
+                specialData: "Todos los laboratorios tienen seguro desactivado por huella digital, por lo que no es posible accesar sin un profesor a cargo",
+                otherInfo: "Todas las computadoras cuentan con un procesador i9 de 12 gen. y 16 gb de RAM (creoooo)"
+            },
+            { //9
+                name: "Salón de clases",
+                location: "En el segundo, tercer y cuarto piso de la ENES",
+                mainUse: "Se imparten clases a los alumnos de todas las licenciaturas de la ENES",
+                specialData: "La gran mayoría cuenta con 2 tipos de bancas, para adaptarse al trabajo colaborativo o individual según sea el caso",
+                otherInfo: "Todos están equipados con televisión y/o proyector, para mostrar contenido digital de apoyo"
+            },
+            { //10
+                name: "Azotea",
+                location: "En el último piso de la ENES",
+                mainUse: "Esparcimiento, estudio relajado",
+                specialData: "La emperatura siempre es baja",
+                otherInfo: "Está equipada con baños, bebederos y bancas como todos los demás pisos. Óptimo para sesiones de estudio alejadas del bullicio."
+            }
+        ];
+
+        for(let i=0; i<bd.length; i++){
+            console.log(`
+            <<Esto es>> ${bd[i].name}, <<se encuentra en>> ${bd[i].location}, <<se usa principalmente para>> ${bd[i].mainUse} y ${bd[i].specialData}, <<además de que>> ${bd[i].otherInfo}.
+
+            ----------------
+
+            `);
+        }
     </script>
     <audio id="a1" src="./audios/a1.mp3"></audio>
     <audio id="a2" src="./audios/a2.mp3"></audio>
 </body>
 </html>
-
-<!-- 
-
-    I can stop the camera with webcam.stop(), but I dont mannage to reactivate it.
-
-
-
- -->
