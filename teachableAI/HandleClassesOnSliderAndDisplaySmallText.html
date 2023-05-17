@@ -14,9 +14,11 @@
 
 
     <div id="webcam-container"></div>
-    <div id="label-container"></div>
 
     <div id="buttonsContainer"></div>
+
+    <div id="label-container"></div>
+
 
 
 
@@ -53,9 +55,14 @@
         function whereIam(){
             
             if(theMostProbable.value > 0.7){
-                alert(`<<Esto es>> ${bd[theMostProbable.index].name}, <<se encuentra en>> ${bd[theMostProbable.index].location}, <<se usa principalmente para>> ${bd[theMostProbable.index].mainUse} y ${bd[theMostProbable.index].specialData}, <<además de que>> ${bd[theMostProbable.index].otherInfo}.`);
+                document.getElementById(`a${theMostProbable.index + 1}`).play();
+
+                setTimeout(()=>{
+                    alert(`<<Esto es>> ${bd[theMostProbable.index].name}, <<se encuentra en>> ${bd[theMostProbable.index].location}, <<se usa principalmente para>> ${bd[theMostProbable.index].mainUse} y ${bd[theMostProbable.index].specialData}, <<además de que>> ${bd[theMostProbable.index].otherInfo}.`);
+
+                    document.getElementById(`a${theMostProbable.index + 1}`).load(); //not only pause(), but reloads
+                }, 50);
                     
-                    //document.getElementById(`a${theMostProbable.index + 1}`).play();
             }else{
                 alert("La imagen no es certera, apunta a un sitio de interés");
             }
@@ -117,6 +124,8 @@
                 inputElement.max = '1';
                 inputElement.step = '0.001';
 
+                divElement.className = "sliderBox";
+
                 //document.getElementById("label-container").appendChild(inputElement);
                 divElement.appendChild(textElement);
                 divElement.appendChild(inputElement);
@@ -126,7 +135,7 @@
 
             var whereIm = document.createElement("button");
             whereIm.onclick = whereIam;
-            whereIm.textContent = "Press here to know more abput your location";
+            whereIm.textContent = "Quiero saber sobre mi entorno";
             whereIm.id = "whereImButton";
 
             document.getElementById("buttonsContainer").appendChild(whereIm);
@@ -248,5 +257,6 @@
     </script>
     <audio id="a1" src="./audios/a1.mp3"></audio>
     <audio id="a2" src="./audios/a2.mp3"></audio>
+    <audio id="a9" src="./audios/a9.mp3"></audio>
 </body>
 </html>
