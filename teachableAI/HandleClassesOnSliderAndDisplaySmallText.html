@@ -8,17 +8,55 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+
+    <img src="./logos/enesdor.png" alt="" class="imgLater" id="enesDor">
+
+    <img src="./logos/tecnoTrans.png" alt="" class="imgLater" id="tecnoAzul">
+
+
+    
     <div id="fullscreen-image">
-       <img src="./enesLogo.jpg" alt="Full Screen Image">
+        <img src="./enesLogo.jpg" alt="Full Screen Image">
     </div>
+    
+    
+    <div id="webcam-container">
+    
 
-
-    <div id="webcam-container"></div>
-
-    <div id="buttonsContainer"></div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
     <div id="label-container"></div>
+    <br>
+    
+    <div id="displayTextBox">
+        <h1 id="thePlace">Hola mundo</h1>
+        <section id="textBox">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora beatae aut inventore exercitationem repellat architecto vel optio laborum ad dicta? Maxime quod dignissimos expedita, quos facilis eius delectus eveniet molestiae soluta saepe excepturi voluptatum, totam, unde ducimus mollitia dolorem debitis vel esse! Fuga, asperiores dignissimos?
+        </section>
+        <br>
+        <button id="theJumpingButton" onclick="closeTextBox()">Okay</button>
 
+    </div>
+    <div id="buttonsContainer">
+    </div>
+
+    <br>
+    <br><br><br>
+    <br>
+    <div id="thanksSection">
+
+        <h5>Made by: Emilio Lemus & Joel Ramirez</h5>
+        
+        <h5>Special thanks to: </h5>
+        <h4>Github, Google, etc etc</h4>
+    </div>
+    <br>
 
 
 
@@ -51,17 +89,41 @@
 
         let wantNew = true;
 
+        function closeTextBox(){
+            document.getElementById("displayTextBox").style.visibility = "hidden";
+
+            document.getElementById("label-container").style.visibility = "visible";
+            document.getElementById("buttonsContainer").style.visibility = "visible";
+            document.getElementById(`a${reproduciendoIndex}`).load(); //not only pause(), but reloads
+        }
+
+        var reproduciendoIndex = 0;
 
         function whereIam(){
             
             if(theMostProbable.value > 0.7){
+                
+                document.getElementById("displayTextBox").style.visibility = "visible";
+
+                document.getElementById("label-container").style.visibility = "hidden";
+                document.getElementById("buttonsContainer").style.visibility = "hidden";
+                
+
                 document.getElementById(`a${theMostProbable.index + 1}`).play();
 
+                /*  //We used to display the text through an alert, now is a function and a text box
                 setTimeout(()=>{
-                    alert(`<<Esto es>> ${bd[theMostProbable.index].name}, <<se encuentra en>> ${bd[theMostProbable.index].location}, <<se usa principalmente para>> ${bd[theMostProbable.index].mainUse} y ${bd[theMostProbable.index].specialData}, <<además de que>> ${bd[theMostProbable.index].otherInfo}.`);
+                    alert(`Esto es ${bd[theMostProbable.index].name}, se encuentra en ${bd[theMostProbable.index].location}, se usa principalmente para ${bd[theMostProbable.index].mainUse} y ${bd[theMostProbable.index].specialData}, además de que ${bd[theMostProbable.index].otherInfo}.`);
 
                     document.getElementById(`a${theMostProbable.index + 1}`).load(); //not only pause(), but reloads
-                }, 50);
+                }, 50);*/
+
+                reproduciendoIndex = theMostProbable.index + 1;
+
+
+                document.getElementById("thePlace").innerText = bd[theMostProbable.index].name;
+
+                document.getElementById("textBox").innerText = `Se encuentra en ${bd[theMostProbable.index].location}, se usa principalmente para ${bd[theMostProbable.index].mainUse} y ${bd[theMostProbable.index].specialData}, además de que ${bd[theMostProbable.index].otherInfo}.`;
                     
             }else{
                 alert("La imagen no es certera, apunta a un sitio de interés");
@@ -131,11 +193,22 @@
                 divElement.appendChild(inputElement);
                 labelContainer.appendChild(divElement);
 
+
+                let imgE = document.createElement("img");
+                imgE.source = "./logos/enesdor.png";
+
+
+                //document.appendChild(imgE); ///'<img src="./logos/enesdor.png" alt="enesDorado" id="enesDorado">');
+                document.querySelector("#enesDor").style.display = "unset";
+                document.querySelector("#tecnoAzul").style.display = "unset";
+                document.querySelector("#thanksSection").style.display = "unset";
+                
+
             }
 
             var whereIm = document.createElement("button");
             whereIm.onclick = whereIam;
-            whereIm.textContent = "Quiero saber sobre mi entorno";
+            whereIm.textContent = "¿Dónde estoy?";
             whereIm.id = "whereImButton";
 
             document.getElementById("buttonsContainer").appendChild(whereIm);
@@ -175,80 +248,80 @@
 
         const bd = [
             { //1
-                name: "la ENES",
-                location: "A mano derecha de la entrada del campus",
-                mainUse: "impartición de clases",
+                name: "ENES",
+                location: "a mano derecha de la entrada del campus",
+                mainUse: "para impartición de clases y lleva en pié menos de 3 años, es muy nueva, ",
                 specialData: "Lleva en pié menos de 3 años, es muy nueva",
-                otherInfo: "En la planta baja puede encontrar el área médica, la psicóloga y la cafetería. En el primer piso se encuentran los laboratorios de química y biología, así como la explanada y el área de juegos. En el segundo piso se ubica \"servicios escolares\". En el tercer piso se encuentran los laboratorios de cómputo. En el cuarto piso se encuentran las oficinas de los directivos y docentes."
+                otherInfo: "en la planta baja puede encontrar el área médica, la psicóloga y la cafetería. En el primer piso se encuentran los laboratorios de química y biología, así como la explanada y el área de juegos. En el segundo piso se ubica \"servicios escolares\". En el tercer piso se encuentran los laboratorios de cómputo. En el cuarto piso se encuentran las oficinas de los directivos y docentes."
             }, //2
             {
-                name: "la Planta baja",
-                location: "Piso que es atravesado por el circuito principal",
-                mainUse: "Accesso principal a las escaleras, futura recepción vehicular.",
-                specialData: "Los estudiantes pueden dejar sus bicis encadenadas ahí",
-                otherInfo: "A la derecha del pasillo están las escaleras para bajar a los laboratorios de Ortesis y Prótesis."
+                name: "Planta baja",
+                location: "el piso que es atravesado por el circuito principal",
+                mainUse: "como accesso principal a las escaleras, futura recepción vehicular, ",
+                specialData: "los estudiantes pueden dejar sus bicis encadenadas ahí",
+                otherInfo: "a la derecha del pasillo están las escaleras para bajar a los laboratorios de Ortesis y Prótesis."
             },
             { //3
                 name: "Lab. de Ortesis",
-                location: "A la derecha de la ENES tomando las escaleras para bajar en planta baja.",
-                mainUse: "Educación e investigaciones relacionadas a la carrera de Ortesis y Prótesis.",
-                specialData: "Es el lugar más escondido de la ENES",
-                otherInfo: "Los estudiantes laboran en sus laboratorios desde el 1er semestre"
+                location: "a la derecha de la ENES tomando las escaleras para bajar en planta baja.",
+                mainUse: "para la educación e investigaciones relacionadas a la carrera de Ortesis y Prótesis; ",
+                specialData: "es el lugar más escondido de la ENES, ",
+                otherInfo: "los estudiantes laboran en sus laboratorios desde el 1er semestre"
             },
             { //4
                 name: "Cafetería",
-                location: "Debajo del circuito principal, en forma de cueva",
-                mainUse: "1/2 de los alumnos consume sus alimentos en ese lugar",
-                specialData: "Todos los locales tienen pago por transferencia",
-                otherInfo: "Los horarios de los desayunos y comidas son de 10 am a 2:30 pm"
+                location: "debajo del circuito principal, en forma de cueva",
+                mainUse: " por los alumnos, 1/2 del alumnado consume sus alimentos en ese lugar",
+                specialData: "todos los locales tienen pago por transferencia",
+                otherInfo: "los horarios de los desayunos y comidas son de 10 am a 2:30 pm"
             },
             { //5
                 name: "Muro morado",
-                location: "En el anfiteatro de la ENES",
-                mainUse: "Exposición de temáticas relacionadas con la igualdad y discriminación.",
-                specialData: "Aquí se moldea el futuro de los estudiantes...",
-                otherInfo: "Cada 8 de Marzo se realizan actividades culturales en el recinto."
+                location: "en el anfiteatro de la ENES",
+                mainUse: "para exposición de temáticas relacionadas con la igualdad y discriminación.",
+                specialData: "aquí se moldea el futuro de los estudiantes...",
+                otherInfo: "cada 8 de Marzo se realizan actividades culturales en el recinto."
             },
             { //6
-                name: "Explanada de juegos",
+                name: "explanada de juegos",
                 location: "En el primer piso de la ENES en el ala derecha",
-                mainUse: "Recreación",
-                specialData: "Se encuentran tableros de ajedrez, ping pong y futbolito",
-                otherInfo: "Servicios escolares puede prestar material"
+                mainUse: "espacio de recreación",
+                specialData: "se encuentran tableros de ajedrez, ping pong y futbolito",
+                otherInfo: "servicios escolares puede prestar material"
             },
             { //7
                 name: "Labs. de química",
-                location: "En el primer piso de la ENES en el ala derecha",
-                mainUse: "Docencia",
-                specialData: "Se imparten clases de prácticas de química en sus diferentes ramificaciones, y a alumnos de licenciatura, maestría e ingeniería.",
-                otherInfo: "En horario de clase está disponible un laboratorista para apoyar con el orden y provisión del material"
+                location: "en el primer piso de la ENES en el ala derecha",
+                mainUse: "para docencia",
+                specialData: "se imparten clases de prácticas de química en sus diferentes ramificaciones, y a alumnos de licenciatura, maestría e ingeniería,",
+                otherInfo: "en horario de clase está disponible un laboratorista para apoyar con el orden y provisión del material"
             },
             { //8
                 name: "Labs. de cómputo",
-                location: "En el 3er piso a mano derecha de las escaleras",
-                mainUse: "Clases específicas de cómputo paralelo, introducción a la programación, etc afines.",
-                specialData: "Todos los laboratorios tienen seguro desactivado por huella digital, por lo que no es posible accesar sin un profesor a cargo",
-                otherInfo: "Todas las computadoras cuentan con un procesador i9 de 12 gen. y 16 gb de RAM (creoooo)"
+                location: "en el 3er piso a mano derecha de las escaleras",
+                mainUse: "para dar clases específicas de cómputo paralelo, introducción a la programación, etc afines ",
+                specialData: "todos los laboratorios tienen seguro desactivado por huella digital, por lo que no es posible accesar sin un profesor a cargo",
+                otherInfo: "todas las computadoras cuentan con un procesador i9 de 12 gen. y 16 gb de RAM (creoooo)"
             },
             { //9
                 name: "Salón de clases",
-                location: "En el segundo, tercer y cuarto piso de la ENES",
-                mainUse: "Se imparten clases a los alumnos de todas las licenciaturas de la ENES",
-                specialData: "La gran mayoría cuenta con 2 tipos de bancas, para adaptarse al trabajo colaborativo o individual según sea el caso",
-                otherInfo: "Todos están equipados con televisión y/o proyector, para mostrar contenido digital de apoyo"
+                location: "en el segundo, tercer y cuarto piso de la ENES",
+                mainUse: "para impartir clases a los alumnos de todas las licenciaturas de la ENES",
+                specialData: "la gran mayoría cuenta con 2 tipos de bancas, para adaptarse al trabajo colaborativo o individual según sea el caso",
+                otherInfo: "todos están equipados con televisión y/o proyector, para mostrar contenido digital de apoyo"
             },
             { //10
                 name: "Azotea",
-                location: "En el último piso de la ENES",
-                mainUse: "Esparcimiento, estudio relajado",
-                specialData: "La emperatura siempre es baja",
-                otherInfo: "Está equipada con baños, bebederos y bancas como todos los demás pisos. Óptimo para sesiones de estudio alejadas del bullicio."
+                location: "en el último piso de la ENES",
+                mainUse: "como espacio de esparcimiento, estudio relajado",
+                specialData: "la emperatura siempre es baja",
+                otherInfo: "está equipada con baños, bebederos y bancas como todos los demás pisos. Óptimo para sesiones de estudio alejadas del bullicio."
             }
         ];
 
         for(let i=0; i<bd.length; i++){
             console.log(`
-            <<Esto es>> ${bd[i].name}, <<se encuentra en>> ${bd[i].location}, <<se usa principalmente para>> ${bd[i].mainUse} y ${bd[i].specialData}, <<además de que>> ${bd[i].otherInfo}.
+            Se encuentra en>> ${bd[i].location}, <<se usa principalmente para>> ${bd[i].mainUse} y ${bd[i].specialData}, <<además de que>> ${bd[i].otherInfo}.
 
             ----------------
 
@@ -257,6 +330,15 @@
     </script>
     <audio id="a1" src="./audios/a1.mp3"></audio>
     <audio id="a2" src="./audios/a2.mp3"></audio>
+    <audio id="a3" src="./audios/a3.mp3"></audio>
+    <audio id="a4" src="./audios/a4.mp3"></audio>
+    <audio id="a5" src="./audios/a5.mp3"></audio>
+    <audio id="a6" src="./audios/a6.mp3"></audio>
+    <audio id="a7" src="./audios/a7.mp3"></audio>
+    <audio id="a8" src="./audios/a8.mp3"></audio>
     <audio id="a9" src="./audios/a9.mp3"></audio>
+    <audio id="a10" src="./audios/a10.mp3"></audio>
 </body>
 </html>
+
+<!-- https://online-voice-recorder.com/ -->
